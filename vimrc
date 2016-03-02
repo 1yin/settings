@@ -1,70 +1,115 @@
-" create ctags
-map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+"vim-plug
+call plug#begin('~/.vim/plugged')
 
-" ctaglist
-let Tlist_Show_One_File=1
-let Tlist_Exit_OnlyWindow=1
+Plug 'altercation/vim-colors-solarized'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'scrooloose/syntastic'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-easytags'
+Plug 'majutsushi/tagbar'
+Plug 'Raimondi/delimitMate'
+
+call plug#end()
+
+" airline
+let g:airline#extensions#tabline#enabled = 1
+
+" scrooloose/syntastic settings
+let g:syntastic_error_symbol = '✘'
+let g:syntastic_warning_symbol = "▲"
+augroup mySyntastic
+  au!
+  au FileType tex let b:syntastic_mode = "passive"
+augroup END
+
+" xolox/vim-easytags settings
+" Where to look for tags files
+set tags=./tags;,~/.vimtags
+" Sensible defaults
+let g:easytags_events = ['BufReadPost', 'BufWritePost']
+let g:easytags_async = 1
+let g:easytags_dynamic_files = 2
+let g:easytags_resolve_links = 1
+let g:easytags_suppress_ctags_warning = 1
+
+" delimitMate settings
+let delimitMate_expand_cr = 1
+augroup mydelimitMate
+  au!
+  au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
+  au FileType tex let b:delimitMate_quotes = ""
+  au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},`:'"
+  au FileType python let b:delimitMate_nesting_quotes = ['"', "'"]
+augroup END
+
+" nerdtree
+nmap <silent> nt :NERDTreeTabsToggle<CR>
+
+" tagbar
+nmap <silent> ct :TagbarToggle<CR>
+
+" cscope key mapping
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" Using 'CTRL-spacebar' (intepreted as CTRL-@ by vim) then a search type
+" makes the vim window split horizontally, with search result displayed in
+" the new window.
+nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+
+" Hitting CTRL-space *twice* before the search type does a vertical
+" split instead of a horizontal one (vim 6 and up only)
+nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+
+" show line number
+set nu
 
 " syntax
 syntax enable
 syntax on
 
-" cscope
-nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR><CR>
-nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-set cscopequickfix=s-,c-,d-,i-,t-,e-
-
-" omni-complete
-set nocp
-filetype plugin on
-
-" minibuffer
-let g:SuperTabDefaultCompletionType="context"
-let g:miniBufExplMapWindowNavVim = 1   
-let g:miniBufExplMapWindowNavArrows = 1   
-let g:miniBufExplMapCTabSwitchBufs = 1   
-let g:miniBufExplModSelTarget = 1  
-let g:miniBufExplMoreThanOne=0  
-
-" winmanager & nerdtree
-let g:NERDTree_title="[NERDTree]"  
-let g:winManagerWindowLayout="NERDTree|TagList"  
-
-function! NERDTree_Start()  
-    exec 'NERDTree'  
-endfunction  
-
-function! NERDTree_IsValid()  
-    return 1  
-endfunction  
-              
-" toggle
-nmap wm :WMToggle<CR>  
-
-set nu
+" status line
+set laststatus=2
 
 " indent
-set autoindent  
-set tabstop=4  
+set autoindent
+set tabstop=4
 set shiftwidth=4
 set shiftwidth=4
 set expandtab
 set smarttab
 filetype plugin indent on
 
-" line break on 500 char
+" line break on 128 char
 set lbr
-set tw=500
+set tw=128
 
-set ai "Auto indent  
-set si "Smart indent  
-set wrap "Wrap lines  
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
 
 " Always show current position
 set ruler
@@ -73,7 +118,7 @@ set ruler
 set cmdheight=1
 
 " A buffer becomes hidden when it is abandoned
- set hid
+set hid
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -82,7 +127,7 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -108,7 +153,8 @@ set novisualbell
 set t_vb=
 set tm=500
 
-colorscheme desert
+set background=dark
+colorscheme solarized
 
 " width set at 128
 " highlight OverLength ctermbg=darkred ctermfg=white guibg=#FFD9D9
@@ -128,17 +174,5 @@ set encoding=utf8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-" Format the statusline  
-set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%{v:register}\ %c,%l/%L\ %P\ 0x%04B
-
 " remember the last position
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
-
-" Returns true if paste mode is enabled
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    en
-    return ''
-endfunction
-
